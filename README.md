@@ -2,6 +2,8 @@
 
 An interactive 3D visualization showcasing Elasticsearch's vector index types and their performance trade-offs, based on official Elastic benchmarks and the latest 2024 improvements including BBQ (Better Binary Quantization).
 
+> **⚠️ Disclaimer**: This is a proof of concept project created for personal learning and exploration. It is not an official Elastic product and should not be used for production decisions without consulting official Elasticsearch documentation and conducting your own benchmarks.
+
 ![Elastic Vector Search 3D](screenshots/elastic-vector-demo.gif)
 *Interactive 3D visualization of HNSW, int8, int4, and BBQ index performance*
 
@@ -182,9 +184,16 @@ elastic-vector-3d/
 | 10M-100M | int8_hnsw | bbq_hnsw | int8_hnsw |
 | >100M | bbq_hnsw | bbq_hnsw | int8_hnsw |
 
-## 📝 License
+## 📝 License & Disclaimer
 
 MIT License - Built with data from Elastic's public benchmarks and blog posts.
+
+**Important Notes:**
+- This is a personal learning project and proof of concept
+- Performance metrics are approximations based on public benchmarks
+- Always conduct your own testing for production use cases
+- Not affiliated with or endorsed by Elastic NV
+- For official information, consult [Elasticsearch documentation](https://www.elastic.co/guide/)
 
 ## 🙏 Acknowledgments
 
@@ -194,4 +203,4 @@ MIT License - Built with data from Elastic's public benchmarks and blog posts.
 
 ---
 
-*Built to help understand Elasticsearch's vector index trade-offs and make informed decisions for your search applications.*
+*A personal exploration tool to help visualize and understand Elasticsearch's vector index trade-offs. Created for learning purposes - please refer to official documentation for production decisions.*
