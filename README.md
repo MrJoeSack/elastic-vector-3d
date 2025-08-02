@@ -4,6 +4,17 @@ An interactive 3D visualization showcasing Elasticsearch's vector index types an
 
 > **⚠️ Disclaimer**: This is a proof of concept project created for personal learning and exploration. It is not an official Elastic product and should not be used for production decisions without consulting official Elasticsearch documentation and conducting your own benchmarks.
 
+## 🚀 Quick Start (Windows)
+
+```cmd
+# Requires Node.js 18+ installed from https://nodejs.org/
+git clone https://github.com/MrJoeSack/elastic-vector-3d.git
+cd elastic-vector-3d
+npm install
+npm run dev
+# Open http://localhost:5173 in your browser
+```
+
 ![Elastic Vector Search 3D](screenshots/elastic-vector-demo.gif)
 *Interactive 3D visualization of HNSW, int8, int4, and BBQ index performance*
 
@@ -46,13 +57,137 @@ Based on Elastic's 2024 benchmark data:
 - Uses asymmetric quantization: binary for storage, int4 for queries
 - Includes intelligent reranking for surprising accuracy
 
-## 🎮 Usage
+## 🎮 Installation & Setup
 
-### Installation
+### Prerequisites
+- **Node.js** (version 18 or higher) - [Download from nodejs.org](https://nodejs.org/)
+- **Git** (optional, for cloning) - [Download from git-scm.com](https://git-scm.com/)
+
+### Windows Installation Steps
+
+#### Option 1: Using Git (Recommended)
+1. **Open Command Prompt or PowerShell**
+   ```cmd
+   # Press Windows + R, type "cmd" or "powershell", press Enter
+   ```
+
+2. **Clone the repository**
+   ```cmd
+   git clone https://github.com/MrJoeSack/elastic-vector-3d.git
+   cd elastic-vector-3d
+   ```
+
+3. **Install dependencies**
+   ```cmd
+   npm install
+   ```
+
+4. **Start the development server**
+   ```cmd
+   npm run dev
+   ```
+
+5. **Open in browser**
+   - The terminal will show: `Local: http://localhost:5173/`
+   - Open your browser and navigate to http://localhost:5173
+   - The app should load automatically
+
+#### Option 2: Download ZIP
+1. **Download the project**
+   - Go to https://github.com/MrJoeSack/elastic-vector-3d
+   - Click the green "Code" button
+   - Select "Download ZIP"
+   - Extract to a folder (e.g., `C:\Users\YourName\Documents\elastic-vector-3d`)
+
+2. **Open Command Prompt in the project folder**
+   - Navigate to the extracted folder in File Explorer
+   - Click in the address bar, type `cmd`, press Enter
+   - Or: Shift + Right-click in the folder, select "Open PowerShell window here"
+
+3. **Install and run**
+   ```cmd
+   npm install
+   npm run dev
+   ```
+
+4. **Open http://localhost:5173 in your browser**
+
+### macOS/Linux Installation
 ```bash
+# Clone the repository
+git clone https://github.com/MrJoeSack/elastic-vector-3d.git
+cd elastic-vector-3d
+
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
+
+# Open http://localhost:5173 in your browser
 ```
+
+### Troubleshooting
+
+#### Common Windows Issues
+
+**Issue: 'npm' is not recognized as an internal or external command**
+- **Solution**: Install Node.js from https://nodejs.org/ and restart your terminal
+
+**Issue: Port 5173 is already in use**
+- **Solution**: Either close the application using that port or modify `vite.config.js`:
+  ```javascript
+  export default {
+    server: {
+      port: 3000  // Change to any available port
+    }
+  }
+  ```
+
+**Issue: Script execution is disabled (PowerShell)**
+- **Solution**: Run PowerShell as Administrator and execute:
+  ```powershell
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+  ```
+
+**Issue: Slow initial load or white screen**
+- **Solution**: Wait 10-15 seconds for initial compilation. Check browser console (F12) for errors.
+
+### Testing the Application
+
+1. **Verify the 3D visualization loads**
+   - You should see a 3D space with colored spheres representing different index types
+
+2. **Test interactions**
+   - **Rotate**: Click and drag to rotate the view
+   - **Zoom**: Use mouse wheel to zoom in/out
+   - **Hover**: Move mouse over spheres to see tooltips
+   - **Click**: Click on spheres for detailed information
+
+3. **Test controls**
+   - Adjust sliders in the right panel
+   - Watch the visualization update in real-time
+   - Change dataset size and dimensions
+
+4. **Performance check**
+   - The app should run smoothly at 60 FPS
+   - If laggy, try reducing browser window size
+
+### Build for Production
+```bash
+# Create optimized production build
+npm run build
+
+# Preview production build locally
+npm run preview
+
+# The built files will be in the 'dist' folder
+```
+
+### System Requirements
+- **Minimum**: 4GB RAM, any modern browser (Chrome, Firefox, Edge, Safari)
+- **Recommended**: 8GB RAM, dedicated graphics for smooth 3D rendering
+- **Browser**: Chrome or Edge recommended for best WebGL performance
 
 ### Navigation
 - **Drag** to rotate the 3D visualization
