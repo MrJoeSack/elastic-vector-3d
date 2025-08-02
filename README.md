@@ -1,19 +1,9 @@
 # Elasticsearch Vector Index Performance Visualization
 
-An interactive 3D visualization showcasing Elasticsearch's vector index types and their performance trade-offs, based on official Elastic benchmarks and the latest 2024 improvements including BBQ (Better Binary Quantization).
+An interactive 3D visualization showcasing Elasticsearch's vector index types and their performance trade-offs, based on official Elastic benchmarks and the latest 2024-2025 improvements including BBQ (Better Binary Quantization).
 
 > **⚠️ Disclaimer**: This is a proof of concept project created for personal learning and exploration. It is not an official Elastic product and should not be used for production decisions without consulting official Elasticsearch documentation and conducting your own benchmarks.
 
-## 🚀 Quick Start (Windows)
-
-```cmd
-# Requires Node.js 18+ installed from https://nodejs.org/
-git clone https://github.com/MrJoeSack/elastic-vector-3d.git
-cd elastic-vector-3d
-npm install
-npm run dev
-# Open http://localhost:5173 in your browser
-```
 
 ![Elastic Vector Search 3D](screenshots/elastic-vector-demo.gif)
 *Interactive 3D visualization of HNSW, int8, int4, and BBQ index performance*
@@ -23,8 +13,8 @@ npm run dev
 ### Index Types Visualized
 - **HNSW (Standard)** - Full float32 precision with highest accuracy
 - **int8_hnsw (Default)** - 75% memory reduction with good recall (Default since v8.14)
-- **int4_hnsw** - 87% memory reduction for cost-sensitive applications
-- **BBQ HNSW** - Revolutionary 96% memory reduction using 1-bit quantization
+- **int4_hnsw** - 87% memory reduction for cost-sensitive applications (Added in v8.15)
+- **BBQ HNSW** - Revolutionary 96% memory reduction using 1-bit quantization (GA in v9.0, April 2025)
 - **Flat (Exact)** - Brute-force search with perfect recall
 - **BBQ Flat** - Binary quantized exact search
 
@@ -40,7 +30,7 @@ npm run dev
 
 ## 📊 Performance Metrics
 
-Based on Elastic's 2024 benchmark data:
+Based on Elastic's 2024-2025 benchmark data:
 
 | Index Type | Memory Reduction | Typical Recall | Query Latency | Use Case |
 |:---:|:---:|:---:|:---:|:---|
@@ -56,16 +46,28 @@ Based on Elastic's 2024 benchmark data:
 - Achieves better ranking quality than float32 in 9/10 datasets
 - Uses asymmetric quantization: binary for storage, int4 for queries
 - Includes intelligent reranking for surprising accuracy
+- Introduced in v8.16 (Nov 2024) as technical preview, GA in v9.0 (Apr 2025)
 
 ## 🎮 Installation & Setup
 
 ### Prerequisites
-- **Node.js** (version 18 or higher) - [Download from nodejs.org](https://nodejs.org/)
+- **Node.js** (version 18+) - [Download from nodejs.org](https://nodejs.org/)
 - **Git** (optional, for cloning) - [Download from git-scm.com](https://git-scm.com/)
 
-### Windows Installation Steps
+### Windows Installation
 
-#### Option 1: Using Git (Recommended)
+#### Quick Start
+```cmd
+git clone https://github.com/MrJoeSack/elastic-vector-3d.git
+cd elastic-vector-3d
+npm install
+npm run dev
+# Open http://localhost:5173 in your browser
+```
+
+#### Detailed Steps
+
+**Option 1: Using Git (Recommended)**
 1. **Open Command Prompt or PowerShell**
    ```cmd
    # Press Windows + R, type "cmd" or "powershell", press Enter
@@ -92,7 +94,7 @@ Based on Elastic's 2024 benchmark data:
    - Open your browser and navigate to http://localhost:5173
    - The app should load automatically
 
-#### Option 2: Download ZIP
+**Option 2: Download ZIP**
 1. **Download the project**
    - Go to https://github.com/MrJoeSack/elastic-vector-3d
    - Click the green "Code" button
@@ -189,13 +191,6 @@ npm run preview
 - **Recommended**: 8GB RAM, dedicated graphics for smooth 3D rendering
 - **Browser**: Chrome or Edge recommended for best WebGL performance
 
-### Navigation
-- **Drag** to rotate the 3D visualization
-- **Scroll** to zoom in/out
-- **Hover** over spheres for quick metrics
-- **Click** spheres for detailed configuration analysis
-- **Adjust sliders** to see real-time performance impact
-
 ### Understanding the Axes
 - **X-axis (Blue)**: Query Latency (1ms - 1000ms, logarithmic)
 - **Y-axis (Teal)**: Memory per Million Vectors (10MB - 10GB, logarithmic)
@@ -273,13 +268,15 @@ Where:
 }
 ```
 
-## 📈 2024 Improvements
+## 📈 Recent Improvements (2024-2025)
 
 Elasticsearch has made significant vector search improvements:
-- **8.14**: int8 becomes default, 50% faster indexing
-- **8.15**: SIMD optimizations for int8_hnsw
-- **9.1**: BBQ by default, ACORN for filtered search
-- **Native code acceleration**: Up to 12x faster than competitors
+- **8.12** (Jan 2024): int8_hnsw introduced with 75% memory reduction
+- **8.14** (Jun 2024): int8 becomes default, 50% faster indexing
+- **8.15** (Aug 2024): SIMD optimizations for int8_hnsw, int4 quantization added
+- **8.16** (Nov 2024): BBQ introduced as technical preview
+- **9.0** (Apr 2025): BBQ now GA, 5x faster than competitors, ColBERT/ColPali support
+- **Native code acceleration**: Up to 12x faster with recent optimizations
 
 ## 🏗️ Project Structure
 
