@@ -1,6 +1,6 @@
 # Elasticsearch Vector Index Performance Visualization
 
-An interactive 3D visualization showcasing Elasticsearch's vector index types and their performance trade-offs, based on official Elastic benchmarks and the latest 2024-2025 improvements including BBQ (Better Binary Quantization).
+An interactive 3D visualization showcasing Elasticsearch's vector index types and their performance trade-offs, based on official Elastic benchmarks and the latest 2024-2025 improvements including BBQ (Better Binary Quantization) now default in v9.1.
 
 > **⚠️ Disclaimer**: This is a proof of concept project created for personal learning and exploration. It is not an official Elastic product and should not be used for production decisions without consulting official Elasticsearch documentation and conducting your own benchmarks.
 
@@ -14,7 +14,7 @@ An interactive 3D visualization showcasing Elasticsearch's vector index types an
 - **HNSW (Standard)** - Full float32 precision with highest accuracy
 - **int8_hnsw (Default)** - 75% memory reduction with good recall (Default since v8.14)
 - **int4_hnsw** - 87% memory reduction for cost-sensitive applications (Added in v8.15)
-- **BBQ HNSW** - Revolutionary 96% memory reduction using 1-bit quantization (GA in v9.0, April 2025)
+- **BBQ HNSW** - Revolutionary 96% memory reduction using 1-bit quantization (Default in v9.1, July 2025)
 - **Flat (Exact)** - Brute-force search with perfect recall
 - **BBQ Flat** - Binary quantized exact search
 
@@ -39,6 +39,19 @@ Based on Elastic's 2024-2025 benchmark data:
 | **int4_hnsw** | 8x | 70-80% | 10-20ms | Cost optimization |
 | **BBQ HNSW** | 32x | 74-90% | 15-40ms | Massive scale |
 
+## 🎯 What's New in v9.1 (July 2025)?
+
+### BBQ Now Default
+- BBQ is now the **default quantization** for dense vectors with 384+ dimensions
+- Automatically applied without configuration changes
+- 5x faster than OpenSearch with 95% memory reduction
+
+### ACORN Filtered Search
+- **ACORN-1** (ANN Constraint-Optimized Retrieval Network) algorithm
+- Up to **5x faster filtered vector search** without accuracy loss
+- Integrates filtering directly into HNSW graph traversal
+- Available in v9.1 only
+
 ## 🎯 What is BBQ?
 
 **Better Binary Quantization (BBQ)** is Elastic's breakthrough in vector compression:
@@ -47,6 +60,7 @@ Based on Elastic's 2024-2025 benchmark data:
 - Uses asymmetric quantization: binary for storage, int4 for queries
 - Includes intelligent reranking for surprising accuracy
 - Introduced in v8.16 (Nov 2024) as technical preview, GA in v9.0 (Apr 2025)
+- **Default for 384+ dim vectors in v9.1 (Jul 2025)**, 5x faster than OpenSearch
 
 ## 🎮 Installation & Setup
 
@@ -240,7 +254,18 @@ Where:
 
 ## 🛠️ Configuration Examples
 
-### Production Default (int8_hnsw)
+### Production Default (v9.1+)
+```json
+{
+  "type": "dense_vector",
+  "dims": 1024,
+  "index": true
+  // BBQ is now default for 384+ dimensions in v9.1
+  // No need to specify index_options for BBQ
+}
+```
+
+### Explicit int8_hnsw (pre-v9.1 default)
 ```json
 {
   "type": "dense_vector",
@@ -254,7 +279,7 @@ Where:
 }
 ```
 
-### Maximum Compression (BBQ)
+### Maximum Compression (BBQ explicit)
 ```json
 {
   "type": "dense_vector",
@@ -276,6 +301,7 @@ Elasticsearch has made significant vector search improvements:
 - **8.15** (Aug 2024): SIMD optimizations for int8_hnsw, int4 quantization added
 - **8.16** (Nov 2024): BBQ introduced as technical preview
 - **9.0** (Apr 2025): BBQ now GA, 5x faster than competitors, ColBERT/ColPali support
+- **9.1/8.19** (Jul 2025): BBQ default for 384+ dims, ACORN filtered search (5x faster)
 - **Native code acceleration**: Up to 12x faster with recent optimizations
 
 ## 🏗️ Project Structure
