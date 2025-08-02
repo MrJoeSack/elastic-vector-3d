@@ -12,7 +12,10 @@ export default function ElasticLegend() {
       borderRadius: '12px',
       fontSize: '12px',
       border: `1px solid ${ELASTIC_COLORS.primary}33`,
-      minWidth: '320px',
+      width: '300px',
+      maxWidth: '300px',
+      maxHeight: '400px',
+      overflowY: 'auto',
       boxShadow: `0 0 30px rgba(27, 169, 245, 0.2)`
     }}>
       <h3 style={{ 

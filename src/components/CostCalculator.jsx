@@ -83,8 +83,8 @@ export default function CostCalculator({ config, params, performance }) {
   return (
     <div style={{
       position: 'absolute',
-      bottom: '20px',
-      right: '360px',
+      top: '450px',  // Position below the legend
+      left: '20px',
       background: `linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%)`,
       color: 'white',
       padding: '20px',

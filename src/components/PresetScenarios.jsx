@@ -113,8 +113,8 @@ export default function PresetScenarios({ onSelectScenario, currentParams }) {
       padding: '20px',
       borderRadius: '12px',
       border: `1px solid ${ELASTIC_COLORS.accent}33`,
-      width: '360px',
-      maxHeight: '400px',
+      width: '320px',
+      maxHeight: '350px',
       overflowY: 'auto',
       boxShadow: `0 0 30px rgba(254, 197, 20, 0.2)`
     }}>

@@ -13,8 +13,8 @@ export default function BeginnerModeToggle({ onModeChange }) {
   return (
     <div style={{
       position: 'absolute',
-      top: '80px',
-      left: '20px',
+      top: '20px',
+      left: '360px',  // Position to the right of the legend
       zIndex: 1000
     }}>
       <button
@@ -48,22 +48,7 @@ export default function BeginnerModeToggle({ onModeChange }) {
         </span>
         {isBeginnerMode ? 'Beginner Mode' : 'Expert Mode'}
       </button>
-      
-      <div style={{
-        marginTop: '8px',
-        padding: '8px 12px',
-        background: 'rgba(0, 0, 0, 0.8)',
-        borderRadius: '8px',
-        fontSize: '11px',
-        color: '#aaa',
-        maxWidth: '200px',
-        lineHeight: '1.4'
-      }}>
-        {isBeginnerMode 
-          ? 'Simple explanations and guidance for beginners'
-          : 'Technical details and advanced parameters'
-        }
-      </div>
+      {/* Removed the description box to reduce clutter */}
     </div>
   )
 }

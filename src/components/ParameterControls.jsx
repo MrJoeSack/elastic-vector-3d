@@ -124,7 +124,9 @@ export default function ParameterControls({ params, onChange, isBeginnerMode = f
       borderRadius: '12px',
       fontSize: '12px',
       border: `1px solid ${ELASTIC_COLORS.secondary}33`,
-      width: '320px',
+      width: '300px',
+      maxHeight: '600px',
+      overflowY: 'auto',
       boxShadow: `0 0 30px rgba(0, 191, 179, 0.2)`
     }}>
       <h3 style={{ 

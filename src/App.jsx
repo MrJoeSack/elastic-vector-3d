@@ -115,8 +115,8 @@ function App() {
         {hoveredPoint && hoveredMetrics && (
           <div className="tooltip" style={{
             position: 'absolute',
-            top: '20px',
-            right: '20px',
+            top: '70px',  // Move down to avoid overlap with BeginnerMode toggle
+            left: '360px',  // Position next to legend
             background: `linear-gradient(135deg, rgba(27, 169, 245, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%)`,
             color: 'white',
             padding: '16px',
@@ -175,9 +175,10 @@ function App() {
         
         {selectedPoint && selectedMetrics && (
           <div className="details-panel" style={{
-            position: 'absolute',
+            position: 'fixed',  // Use fixed positioning
             bottom: '20px',
-            left: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',  // Center horizontally
             background: `linear-gradient(135deg, rgba(27, 169, 245, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%)`,
             color: 'white',
             padding: '24px',
