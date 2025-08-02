@@ -4,8 +4,7 @@ import { OrbitControls } from '@react-three/drei'
 import ElasticVectorVisualization from './components/ElasticVectorVisualization'
 import ElasticLegend from './components/ElasticLegend'
 import ParameterControls from './components/ParameterControls'
-import BeginnerModeToggle, { translateToBeginner } from './components/BeginnerModeToggle'
-import PresetScenarios from './components/PresetScenarios'
+import { translateToBeginner } from './components/BeginnerModeToggle'
 import CostCalculator from './components/CostCalculator'
 import { calculatePerformance, ELASTIC_COLORS, ELASTIC_INDEX_CONFIGS } from './data/ElasticConfigurations'
 import './App.css'
@@ -13,9 +12,9 @@ import './App.css'
 function App() {
   const [selectedPoint, setSelectedPoint] = useState(null)
   const [hoveredPoint, setHoveredPoint] = useState(null)
-  const [isBeginnerMode, setIsBeginnerMode] = useState(true)
+  // Always use beginner mode - technical details in tooltips
+  const isBeginnerMode = true
   const [showCostCalculator, setShowCostCalculator] = useState(false)
-  const [showPresets, setShowPresets] = useState(true)
   
   // HNSW and dataset parameters
   const [hnswParams, setHnswParams] = useState({
@@ -35,18 +34,6 @@ function App() {
   const hoveredMetrics = getPerformanceMetrics(hoveredPoint)
   const selectedMetrics = getPerformanceMetrics(selectedPoint)
   
-  // Handle preset scenario selection
-  const handlePresetSelection = (presetParams) => {
-    setHnswParams({
-      ...hnswParams,
-      ...presetParams
-    })
-    // Find and select the corresponding index type
-    const indexConfig = ELASTIC_INDEX_CONFIGS.find(c => c.indexType === presetParams.indexType)
-    if (indexConfig) {
-      setSelectedPoint(indexConfig)
-    }
-  }
 
   return (
     <div className="app">
@@ -85,24 +72,14 @@ function App() {
           />
         </Canvas>
         
-        <BeginnerModeToggle 
-          onModeChange={setIsBeginnerMode}
-        />
         
         <ElasticLegend />
         
-        <ParameterControls 
+          <ParameterControls 
           params={hnswParams}
           onChange={setHnswParams}
-          isBeginnerMode={isBeginnerMode}
+          isBeginnerMode={true}
         />
-        
-        {showPresets && (
-          <PresetScenarios 
-            onSelectScenario={handlePresetSelection}
-            currentParams={hnswParams}
-          />
-        )}
         
         {showCostCalculator && selectedPoint && (
           <CostCalculator 
@@ -115,7 +92,7 @@ function App() {
         {hoveredPoint && hoveredMetrics && (
           <div className="tooltip" style={{
             position: 'absolute',
-            top: '70px',  // Move down to avoid overlap with BeginnerMode toggle
+            top: '20px',
             left: '360px',  // Position next to legend
             background: `linear-gradient(135deg, rgba(27, 169, 245, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%)`,
             color: 'white',
@@ -130,45 +107,37 @@ function App() {
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.secondary }}>
-                  {isBeginnerMode ? 'Speed' : 'Latency'}:
+                <strong style={{ color: ELASTIC_COLORS.secondary }} title="Technical: Query Latency">
+                  Speed:
                 </strong>
-                <div>
-                  {isBeginnerMode 
-                    ? translateToBeginner('latency_ms', hoveredMetrics.latency)
-                    : `${hoveredMetrics.latency}ms`}
+                <div title={`${hoveredMetrics.latency}ms latency`} style={{ cursor: 'help' }}>
+                  {translateToBeginner('latency_ms', hoveredMetrics.latency)}
                 </div>
               </div>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.accent }}>
-                  {isBeginnerMode ? 'Storage' : 'Memory'}:
+                <strong style={{ color: ELASTIC_COLORS.accent }} title="Technical: Memory per Million Vectors">
+                  Storage:
                 </strong>
-                <div>
-                  {isBeginnerMode
-                    ? translateToBeginner('memory_gb', hoveredMetrics.memoryPerMillion / 1000)
-                    : `${hoveredMetrics.memoryPerMillion}MB/M`}
+                <div title={`${hoveredMetrics.memoryPerMillion}MB per million vectors`} style={{ cursor: 'help' }}>
+                  {translateToBeginner('memory_gb', hoveredMetrics.memoryPerMillion / 1000)}
                 </div>
               </div>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.warning }}>
-                  {isBeginnerMode ? 'Accuracy' : 'Recall'}:
+                <strong style={{ color: ELASTIC_COLORS.warning }} title="Technical: Recall@10">
+                  Accuracy:
                 </strong>
-                <div>
-                  {isBeginnerMode
-                    ? translateToBeginner('recall_pct', hoveredMetrics.recall)
-                    : `${hoveredMetrics.recall}%`}
+                <div title={`${hoveredMetrics.recall}% recall@10`} style={{ cursor: 'help' }}>
+                  {translateToBeginner('recall_pct', hoveredMetrics.recall)}
                 </div>
               </div>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.success }}>QPS:</strong>
-                <div>{hoveredMetrics.qps}</div>
+                <strong style={{ color: ELASTIC_COLORS.success }} title="Queries Per Second">Throughput:</strong>
+                <div title={`${hoveredMetrics.qps} queries per second`} style={{ cursor: 'help' }}>{hoveredMetrics.qps} searches/sec</div>
               </div>
             </div>
             <div style={{ marginTop: '8px', fontSize: '12px', color: '#aaa' }}>
-              <strong>{isBeginnerMode ? 'Compression' : 'Quantization'}:</strong> 
-              {isBeginnerMode 
-                ? translateToBeginner(hoveredPoint.quantization)
-                : hoveredPoint.quantization}
+              <strong title={`Technical: ${hoveredPoint.quantization} quantization`} style={{ cursor: 'help' }}>Compression:</strong> 
+              {translateToBeginner(hoveredPoint.quantization)}
             </div>
           </div>
         )}
@@ -208,20 +177,20 @@ function App() {
               marginBottom: '12px'
             }}>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.secondary }}>Query Latency:</strong>
-                <div style={{ fontSize: '18px', fontWeight: 'bold' }}>{selectedMetrics.latency}ms</div>
+                <strong style={{ color: ELASTIC_COLORS.secondary }} title="Query Latency">Search Speed:</strong>
+                <div style={{ fontSize: '18px', fontWeight: 'bold' }} title="Technical: Query Latency">{selectedMetrics.latency}ms</div>
               </div>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.accent }}>Memory/Million:</strong>
-                <div style={{ fontSize: '18px', fontWeight: 'bold' }}>{selectedMetrics.memoryPerMillion}MB</div>
+                <strong style={{ color: ELASTIC_COLORS.accent }} title="Memory per Million Vectors">Storage Cost:</strong>
+                <div style={{ fontSize: '18px', fontWeight: 'bold' }} title="Technical: Memory per Million Vectors">{selectedMetrics.memoryPerMillion}MB</div>
               </div>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.warning }}>Recall@10:</strong>
-                <div style={{ fontSize: '18px', fontWeight: 'bold' }}>{selectedMetrics.recall}%</div>
+                <strong style={{ color: ELASTIC_COLORS.warning }} title="Recall@10 metric">Search Accuracy:</strong>
+                <div style={{ fontSize: '18px', fontWeight: 'bold' }} title="Technical: Recall@10">{selectedMetrics.recall}%</div>
               </div>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.success }}>Queries/sec:</strong>
-                <div style={{ fontSize: '18px', fontWeight: 'bold' }}>{selectedMetrics.qps}</div>
+                <strong style={{ color: ELASTIC_COLORS.success }} title="Queries per Second">Throughput:</strong>
+                <div style={{ fontSize: '18px', fontWeight: 'bold' }} title="Technical: QPS">{selectedMetrics.qps}</div>
               </div>
             </div>
 

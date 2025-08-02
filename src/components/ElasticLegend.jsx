@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { ELASTIC_INDEX_CONFIGS, ELASTIC_OPTIMAL_ZONES, ELASTIC_COLORS } from '../data/ElasticConfigurations'
 
 export default function ElasticLegend() {
+  const [hoveredItem, setHoveredItem] = useState(null)
   return (
     <div style={{
       position: 'absolute',
@@ -12,9 +14,9 @@ export default function ElasticLegend() {
       borderRadius: '12px',
       fontSize: '12px',
       border: `1px solid ${ELASTIC_COLORS.primary}33`,
-      width: '300px',
-      maxWidth: '300px',
-      maxHeight: '400px',
+      width: '320px',
+      maxWidth: '320px',
+      maxHeight: '700px',
       overflowY: 'auto',
       boxShadow: `0 0 30px rgba(27, 169, 245, 0.2)`
     }}>
@@ -25,7 +27,7 @@ export default function ElasticLegend() {
         borderBottom: `1px solid ${ELASTIC_COLORS.primary}33`,
         paddingBottom: '8px'
       }}>
-        Elasticsearch Index Types
+        Elastic Index Types
       </h3>
       
       <div style={{ marginBottom: '20px' }}>
@@ -34,9 +36,9 @@ export default function ElasticLegend() {
           fontSize: '13px', 
           color: ELASTIC_COLORS.secondary 
         }}>
-          Index Configurations
+          Available Indexes
         </h4>
-        {ELASTIC_INDEX_CONFIGS.slice(0, 4).map((config, index) => (
+        {ELASTIC_INDEX_CONFIGS.map((config, index) => (
           <div key={index} style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -51,7 +53,7 @@ export default function ElasticLegend() {
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
           }}>
-            <div style={{
+            <div title={`${config.quantization} precision`} style={{
               width: '14px',
               height: '14px',
               borderRadius: '50%',
@@ -61,52 +63,13 @@ export default function ElasticLegend() {
               border: `2px solid ${config.color}88`
             }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 'bold', fontSize: '12px' }}>{config.name}</div>
-              <div style={{ fontSize: '10px', color: '#aaa' }}>
-                {config.quantization} • {config.memoryReduction}
+              <div style={{ fontWeight: 'bold', fontSize: '12px', cursor: 'help' }} title={`Technical: ${config.indexType} index`}>{config.name}</div>
+              <div style={{ fontSize: '10px', color: '#aaa', cursor: 'help' }} title={`${config.quantization} quantization`}>
+                {config.memoryReduction} smaller
               </div>
             </div>
           </div>
         ))}
-        
-        <div style={{ 
-          marginTop: '8px', 
-          paddingTop: '8px', 
-          borderTop: `1px solid ${ELASTIC_COLORS.dark}` 
-        }}>
-          {ELASTIC_INDEX_CONFIGS.slice(4).map((config, index) => (
-            <div key={index} style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              marginBottom: '8px',
-              padding: '4px',
-              borderRadius: '4px',
-              transition: 'background 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-            }}>
-              <div style={{
-                width: '14px',
-                height: '14px',
-                borderRadius: '50%',
-                backgroundColor: config.color,
-                marginRight: '10px',
-                boxShadow: `0 0 10px ${config.color}60`,
-                border: `2px solid ${config.color}88`
-              }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 'bold', fontSize: '12px' }}>{config.name}</div>
-                <div style={{ fontSize: '10px', color: '#aaa' }}>
-                  {config.quantization} • {config.memoryReduction}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
       <div style={{ marginBottom: '20px' }}>
@@ -150,25 +113,25 @@ export default function ElasticLegend() {
           fontSize: '13px', 
           color: ELASTIC_COLORS.warning 
         }}>
-          3D Axes
+          Performance Metrics
         </h4>
         <div style={{ fontSize: '11px', lineHeight: '1.6' }}>
           <div style={{ marginBottom: '4px' }}>
-            <strong style={{ color: ELASTIC_COLORS.primary }}>X-axis:</strong>
+            <strong style={{ color: ELASTIC_COLORS.primary, cursor: 'help' }} title="X-axis: Query Latency (1-1000ms, log scale)">Speed:</strong>
             <div style={{ marginLeft: '16px', color: '#ccc' }}>
-              Query Latency (1ms - 1000ms, log scale)
+              How fast searches complete
             </div>
           </div>
           <div style={{ marginBottom: '4px' }}>
-            <strong style={{ color: ELASTIC_COLORS.secondary }}>Y-axis:</strong>
+            <strong style={{ color: ELASTIC_COLORS.secondary, cursor: 'help' }} title="Y-axis: Memory per Million Vectors (10MB-10GB, log scale)">Storage:</strong>
             <div style={{ marginLeft: '16px', color: '#ccc' }}>
-              Memory per Million Vectors (10MB - 10GB, log scale)
+              Memory used per million items
             </div>
           </div>
           <div>
-            <strong style={{ color: ELASTIC_COLORS.accent }}>Z-axis:</strong>
+            <strong style={{ color: ELASTIC_COLORS.accent, cursor: 'help' }} title="Z-axis: Recall@10 (60-100%, linear scale)">Accuracy:</strong>
             <div style={{ marginLeft: '16px', color: '#ccc' }}>
-              Recall@10 (60% - 100%, linear scale)
+              How often finds the right results
             </div>
           </div>
         </div>

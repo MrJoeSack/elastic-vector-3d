@@ -136,7 +136,7 @@ export default function ParameterControls({ params, onChange, isBeginnerMode = f
         borderBottom: `1px solid ${ELASTIC_COLORS.secondary}33`,
         paddingBottom: '8px'
       }}>
-        HNSW Parameters
+        Search Configuration
       </h3>
 
       <SliderControl
@@ -146,8 +146,8 @@ export default function ParameterControls({ params, onChange, isBeginnerMode = f
         value={params.m}
         min={HNSW_PARAMS.m.min}
         max={HNSW_PARAMS.m.max}
-        description={isBeginnerMode ? HNSW_PARAMS.m.effect : HNSW_PARAMS.m.description}
-        helpText={HNSW_PARAMS.m.explanation}
+        description={HNSW_PARAMS.m.effect}
+        helpText={`Technical: ${HNSW_PARAMS.m.description} | ${HNSW_PARAMS.m.explanation}`}
       />
 
       <SliderControl
@@ -158,8 +158,8 @@ export default function ParameterControls({ params, onChange, isBeginnerMode = f
         min={HNSW_PARAMS.ef_construction.min}
         max={HNSW_PARAMS.ef_construction.max}
         step={10}
-        description={isBeginnerMode ? HNSW_PARAMS.ef_construction.effect : HNSW_PARAMS.ef_construction.description}
-        helpText={HNSW_PARAMS.ef_construction.explanation}
+        description={HNSW_PARAMS.ef_construction.effect}
+        helpText={`Technical: ${HNSW_PARAMS.ef_construction.description} | ${HNSW_PARAMS.ef_construction.explanation}`}
       />
 
       <SliderControl
@@ -170,8 +170,8 @@ export default function ParameterControls({ params, onChange, isBeginnerMode = f
         min={HNSW_PARAMS.num_candidates.min}
         max={HNSW_PARAMS.num_candidates.max}
         step={10}
-        description={isBeginnerMode ? HNSW_PARAMS.num_candidates.effect : HNSW_PARAMS.num_candidates.description}
-        helpText={HNSW_PARAMS.num_candidates.explanation}
+        description={HNSW_PARAMS.num_candidates.effect}
+        helpText={`Technical: ${HNSW_PARAMS.num_candidates.description} | ${HNSW_PARAMS.num_candidates.explanation}`}
       />
 
       <div style={{ 
@@ -299,12 +299,12 @@ export default function ParameterControls({ params, onChange, isBeginnerMode = f
         color: '#ccc',
         lineHeight: '1.5'
       }}>
-        <strong style={{ color: ELASTIC_COLORS.warning }}>Performance Impact:</strong>
+        <strong style={{ color: ELASTIC_COLORS.warning }}>Trade-offs:</strong>
         <div style={{ marginTop: '4px' }}>
-          Higher <strong>m</strong> and <strong>ef_construction</strong> improve recall but increase memory and indexing time.
+          Higher <strong>network density</strong> and <strong>index quality</strong> improve accuracy but use more memory.
         </div>
         <div style={{ marginTop: '4px' }}>
-          More <strong>candidates</strong> improve search quality but increase query latency.
+          More <strong>search thoroughness</strong> improves accuracy but slows down searches.
         </div>
       </div>
 
