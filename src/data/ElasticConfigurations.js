@@ -11,6 +11,10 @@ export const ELASTIC_INDEX_CONFIGS = [
     recall: 97,
     color: '#1BA9F5', // Elastic Blue
     description: 'Standard HNSW with full float32 precision. Highest accuracy but maximum memory usage. Best for critical applications requiring perfect recall.',
+    laymanDescription: 'The premium option - like storing HD video instead of compressed. Perfect quality but needs lots of storage.',
+    bestFor: 'Mission-critical searches, medical/legal applications',
+    indexingTime: '1x (baseline)',
+    updateFrequency: 'Supports real-time updates',
     quantization: 'none',
     memoryReduction: '1x',
     pros: ['Highest recall', 'Fastest queries', 'No accuracy loss'],
@@ -25,6 +29,11 @@ export const ELASTIC_INDEX_CONFIGS = [
     recall: 84,
     color: '#00BFB3', // Elastic Teal
     description: 'Default index type since 8.14. 8-bit integer quantization reduces memory by 75% while maintaining good recall. Excellent balance for production.',
+    laymanDescription: 'The recommended choice - like using efficient video compression. Great quality with 75% less storage.',
+    bestFor: 'Most production applications, e-commerce, content search',
+    indexingTime: '1.2x slower than standard',
+    updateFrequency: 'Supports real-time updates',
+    requirements: 'Elasticsearch 8.14+, benefits from SIMD-capable CPUs',
     quantization: '8-bit',
     memoryReduction: '4x',
     pros: ['75% memory savings', 'Good recall', 'SIMD optimized'],
@@ -39,6 +48,11 @@ export const ELASTIC_INDEX_CONFIGS = [
     recall: 78,
     color: '#FEC514', // Elastic Yellow
     description: '4-bit quantization reduces memory by 87%. Good for cost-sensitive applications with acceptable accuracy trade-offs.',
+    laymanDescription: 'The budget option - like using high compression. Good enough quality at a fraction of the cost.',
+    bestFor: 'Large-scale applications where cost matters more than perfect accuracy',
+    indexingTime: '1.1x slower than standard',
+    updateFrequency: 'Supports real-time updates',
+    requirements: 'Vector dimensions must be even numbers',
     quantization: '4-bit',
     memoryReduction: '8x',
     pros: ['87% memory savings', 'Very cost effective', 'Faster indexing'],
@@ -53,6 +67,11 @@ export const ELASTIC_INDEX_CONFIGS = [
     recall: 88,
     color: '#F04E98', // Elastic Pink
     description: 'Better Binary Quantization with 1-bit precision. 96% memory reduction with surprising accuracy through asymmetric quantization and reranking.',
+    laymanDescription: 'The space-saver option - like converting color photos to smart black & white. Amazingly good despite extreme compression.',
+    bestFor: 'Billion-scale deployments, archive search, cost-critical applications',
+    indexingTime: '2x slower due to optimization',
+    updateFrequency: 'Best for stable data, updates require reindexing',
+    requirements: 'Dimensions must be > 64, Elasticsearch 9.1+ recommended',
     quantization: '1-bit',
     memoryReduction: '32x',
     pros: ['96% memory savings', 'Better than expected recall', 'Extremely cost effective'],
@@ -67,6 +86,11 @@ export const ELASTIC_INDEX_CONFIGS = [
     recall: 100,
     color: '#6C5CE7', // Purple
     description: 'Brute-force exact search. Perfect recall but slowest performance. Use for small datasets or when 100% accuracy is required.',
+    laymanDescription: 'The exhaustive option - checks every single item. Perfect accuracy but slow, like reading every page in a library.',
+    bestFor: 'Small datasets (<100K vectors), legal/compliance requirements',
+    indexingTime: 'Instant (no index to build)',
+    updateFrequency: 'Instant updates',
+    warningThreshold: 'Impractical above 100K vectors',
     quantization: 'none',
     memoryReduction: '1x',
     pros: ['Perfect recall', 'No graph building', 'Predictable performance'],
@@ -135,28 +159,37 @@ export const ELASTIC_OPTIMAL_ZONES = [
   }
 ];
 
-// HNSW tuning parameters and their effects
+// HNSW tuning parameters with user-friendly explanations
 export const HNSW_PARAMS = {
   m: {
     default: 16,
     min: 8,
     max: 64,
     description: 'Number of bi-directional links per node',
-    effect: 'Higher values improve recall but increase memory and indexing time'
+    layman: 'Search Network Connectivity',
+    explanation: 'How connected is your search network? Like adding more roads between cities - more paths to find your destination.',
+    effect: 'Higher = More accurate but uses more memory',
+    recommendation: '16 for most cases, 32+ for high accuracy needs'
   },
   ef_construction: {
     default: 100,
     min: 50,
     max: 500,
     description: 'Size of dynamic candidate list',
-    effect: 'Higher values improve graph quality but slow down indexing'
+    layman: 'Index Build Quality',
+    explanation: 'How thoroughly to build the search index? Like spending more time organizing files - takes longer but easier to find things later.',
+    effect: 'Higher = Better search quality but slower to build index',
+    recommendation: '100 for balanced, 200+ for accuracy-critical'
   },
   num_candidates: {
     default: 100,
     min: 50,
     max: 1000,
     description: 'Number of candidates to track during search',
-    effect: 'Higher values improve recall but increase query latency'
+    layman: 'Search Thoroughness',
+    explanation: 'How many options to check per search? Like checking more stores when shopping - more likely to find the best match but takes longer.',
+    effect: 'Higher = More accurate results but slower searches',
+    recommendation: '100 for speed, 200+ for accuracy'
   }
 };
 

@@ -4,12 +4,18 @@ import { OrbitControls } from '@react-three/drei'
 import ElasticVectorVisualization from './components/ElasticVectorVisualization'
 import ElasticLegend from './components/ElasticLegend'
 import ParameterControls from './components/ParameterControls'
-import { calculatePerformance, ELASTIC_COLORS } from './data/ElasticConfigurations'
+import BeginnerModeToggle, { translateToBeginner } from './components/BeginnerModeToggle'
+import PresetScenarios from './components/PresetScenarios'
+import CostCalculator from './components/CostCalculator'
+import { calculatePerformance, ELASTIC_COLORS, ELASTIC_INDEX_CONFIGS } from './data/ElasticConfigurations'
 import './App.css'
 
 function App() {
   const [selectedPoint, setSelectedPoint] = useState(null)
   const [hoveredPoint, setHoveredPoint] = useState(null)
+  const [isBeginnerMode, setIsBeginnerMode] = useState(true)
+  const [showCostCalculator, setShowCostCalculator] = useState(false)
+  const [showPresets, setShowPresets] = useState(true)
   
   // HNSW and dataset parameters
   const [hnswParams, setHnswParams] = useState({
@@ -28,6 +34,19 @@ function App() {
 
   const hoveredMetrics = getPerformanceMetrics(hoveredPoint)
   const selectedMetrics = getPerformanceMetrics(selectedPoint)
+  
+  // Handle preset scenario selection
+  const handlePresetSelection = (presetParams) => {
+    setHnswParams({
+      ...hnswParams,
+      ...presetParams
+    })
+    // Find and select the corresponding index type
+    const indexConfig = ELASTIC_INDEX_CONFIGS.find(c => c.indexType === presetParams.indexType)
+    if (indexConfig) {
+      setSelectedPoint(indexConfig)
+    }
+  }
 
   return (
     <div className="app">
@@ -66,12 +85,32 @@ function App() {
           />
         </Canvas>
         
+        <BeginnerModeToggle 
+          onModeChange={setIsBeginnerMode}
+        />
+        
         <ElasticLegend />
         
         <ParameterControls 
           params={hnswParams}
           onChange={setHnswParams}
+          isBeginnerMode={isBeginnerMode}
         />
+        
+        {showPresets && (
+          <PresetScenarios 
+            onSelectScenario={handlePresetSelection}
+            currentParams={hnswParams}
+          />
+        )}
+        
+        {showCostCalculator && selectedPoint && (
+          <CostCalculator 
+            config={selectedPoint}
+            params={hnswParams}
+            performance={selectedMetrics}
+          />
+        )}
         
         {hoveredPoint && hoveredMetrics && (
           <div className="tooltip" style={{
@@ -87,20 +126,38 @@ function App() {
             boxShadow: `0 0 20px ${hoveredPoint.color}40`
           }}>
             <h3 style={{ color: hoveredPoint.color, margin: '0 0 10px 0' }}>
-              {hoveredPoint.name}
+              {isBeginnerMode ? translateToBeginner(hoveredPoint.indexType) : hoveredPoint.name}
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.secondary }}>Latency:</strong>
-                <div>{hoveredMetrics.latency}ms</div>
+                <strong style={{ color: ELASTIC_COLORS.secondary }}>
+                  {isBeginnerMode ? 'Speed' : 'Latency'}:
+                </strong>
+                <div>
+                  {isBeginnerMode 
+                    ? translateToBeginner('latency_ms', hoveredMetrics.latency)
+                    : `${hoveredMetrics.latency}ms`}
+                </div>
               </div>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.accent }}>Memory:</strong>
-                <div>{hoveredMetrics.memoryPerMillion}MB/M</div>
+                <strong style={{ color: ELASTIC_COLORS.accent }}>
+                  {isBeginnerMode ? 'Storage' : 'Memory'}:
+                </strong>
+                <div>
+                  {isBeginnerMode
+                    ? translateToBeginner('memory_gb', hoveredMetrics.memoryPerMillion / 1000)
+                    : `${hoveredMetrics.memoryPerMillion}MB/M`}
+                </div>
               </div>
               <div>
-                <strong style={{ color: ELASTIC_COLORS.warning }}>Recall:</strong>
-                <div>{hoveredMetrics.recall}%</div>
+                <strong style={{ color: ELASTIC_COLORS.warning }}>
+                  {isBeginnerMode ? 'Accuracy' : 'Recall'}:
+                </strong>
+                <div>
+                  {isBeginnerMode
+                    ? translateToBeginner('recall_pct', hoveredMetrics.recall)
+                    : `${hoveredMetrics.recall}%`}
+                </div>
               </div>
               <div>
                 <strong style={{ color: ELASTIC_COLORS.success }}>QPS:</strong>
@@ -108,7 +165,10 @@ function App() {
               </div>
             </div>
             <div style={{ marginTop: '8px', fontSize: '12px', color: '#aaa' }}>
-              <strong>Quantization:</strong> {hoveredPoint.quantization}
+              <strong>{isBeginnerMode ? 'Compression' : 'Quantization'}:</strong> 
+              {isBeginnerMode 
+                ? translateToBeginner(hoveredPoint.quantization)
+                : hoveredPoint.quantization}
             </div>
           </div>
         )}
@@ -222,6 +282,27 @@ function App() {
               }}
             >
               Close Details
+            </button>
+            
+            {/* Toggle Cost Calculator */}
+            <button 
+              onClick={() => setShowCostCalculator(!showCostCalculator)}
+              style={{
+                marginTop: '8px',
+                marginLeft: '8px',
+                padding: '8px 16px',
+                background: showCostCalculator
+                  ? `linear-gradient(135deg, ${ELASTIC_COLORS.success}44 0%, ${ELASTIC_COLORS.success}22 100%)`
+                  : 'rgba(255,255,255,0.1)',
+                color: 'white',
+                border: `1px solid ${showCostCalculator ? ELASTIC_COLORS.success : '#444'}`,
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              💰 {showCostCalculator ? 'Hide' : 'Show'} Cost
             </button>
           </div>
         )}

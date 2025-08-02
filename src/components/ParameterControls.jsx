@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { HNSW_PARAMS, DATASET_SCALING, DIMENSION_SCALING, ELASTIC_COLORS } from '../data/ElasticConfigurations'
 
-export default function ParameterControls({ params, onChange }) {
+export default function ParameterControls({ params, onChange, isBeginnerMode = false }) {
+  const [showHelp, setShowHelp] = useState({})
   const handleParamChange = (key, value) => {
     onChange({
       ...params,
@@ -8,20 +10,44 @@ export default function ParameterControls({ params, onChange }) {
     });
   };
 
-  const SliderControl = ({ label, param, value, min, max, step = 1, description }) => (
-    <div style={{ marginBottom: '16px' }}>
+  const SliderControl = ({ label, param, value, min, max, step = 1, description, helpText, beginnerLabel }) => (
+    <div style={{ marginBottom: '16px', position: 'relative' }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between',
-        marginBottom: '4px'
+        marginBottom: '4px',
+        alignItems: 'center'
       }}>
-        <label style={{ 
-          fontSize: '12px', 
-          fontWeight: 'bold',
-          color: ELASTIC_COLORS.secondary
-        }}>
-          {label}
-        </label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <label style={{ 
+            fontSize: '12px', 
+            fontWeight: 'bold',
+            color: ELASTIC_COLORS.secondary
+          }}>
+            {isBeginnerMode && beginnerLabel ? beginnerLabel : label}
+          </label>
+          {helpText && (
+            <button
+              onClick={() => setShowHelp({ ...showHelp, [param]: !showHelp[param] })}
+              style={{
+                background: 'transparent',
+                border: `1px solid ${ELASTIC_COLORS.accent}44`,
+                borderRadius: '50%',
+                width: '16px',
+                height: '16px',
+                fontSize: '10px',
+                color: ELASTIC_COLORS.accent,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 0
+              }}
+            >
+              ?
+            </button>
+          )}
+        </div>
         <span style={{ 
           fontSize: '12px', 
           fontWeight: 'bold',
@@ -64,6 +90,26 @@ export default function ParameterControls({ params, onChange }) {
           {description}
         </div>
       )}
+      {showHelp[param] && helpText && (
+        <div style={{
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          marginTop: '4px',
+          padding: '8px',
+          background: `linear-gradient(135deg, ${ELASTIC_COLORS.primary}22 0%, rgba(0,0,0,0.95) 100%)`,
+          border: `1px solid ${ELASTIC_COLORS.primary}44`,
+          borderRadius: '6px',
+          fontSize: '11px',
+          color: '#ccc',
+          lineHeight: '1.4',
+          zIndex: 1000,
+          boxShadow: `0 4px 12px rgba(0,0,0,0.5)`
+        }}>
+          💡 {helpText}
+        </div>
+      )}
     </div>
   );
 
@@ -93,31 +139,37 @@ export default function ParameterControls({ params, onChange }) {
 
       <SliderControl
         label="m (connections)"
+        beginnerLabel="Search Network Density"
         param="m"
         value={params.m}
         min={HNSW_PARAMS.m.min}
         max={HNSW_PARAMS.m.max}
-        description={HNSW_PARAMS.m.effect}
+        description={isBeginnerMode ? HNSW_PARAMS.m.effect : HNSW_PARAMS.m.description}
+        helpText={HNSW_PARAMS.m.explanation}
       />
 
       <SliderControl
         label="ef_construction"
+        beginnerLabel="Index Quality"
         param="ef_construction"
         value={params.ef_construction}
         min={HNSW_PARAMS.ef_construction.min}
         max={HNSW_PARAMS.ef_construction.max}
         step={10}
-        description={HNSW_PARAMS.ef_construction.effect}
+        description={isBeginnerMode ? HNSW_PARAMS.ef_construction.effect : HNSW_PARAMS.ef_construction.description}
+        helpText={HNSW_PARAMS.ef_construction.explanation}
       />
 
       <SliderControl
         label="num_candidates"
+        beginnerLabel="Search Thoroughness"
         param="num_candidates"
         value={params.num_candidates}
         min={HNSW_PARAMS.num_candidates.min}
         max={HNSW_PARAMS.num_candidates.max}
         step={10}
-        description={HNSW_PARAMS.num_candidates.effect}
+        description={isBeginnerMode ? HNSW_PARAMS.num_candidates.effect : HNSW_PARAMS.num_candidates.description}
+        helpText={HNSW_PARAMS.num_candidates.explanation}
       />
 
       <div style={{ 
